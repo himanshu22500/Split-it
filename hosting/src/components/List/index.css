@@ -1,0 +1,31 @@
+.list-component {
+  text-align: center;
+}
+
+.list-component h2 {
+  margin-bottom: 1rem;
+}
+
+.list-component ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.list-component li {
+  background-color: #f4f4f4;
+  padding: 1rem;
+  border-radius: 4px;
+  margin: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.list-component a {
+  text-decoration: none;
+  color: #333;
+}
+
+.list-component li:hover {
+  background-color: #e0e0e0;
+}

@@ -1,0 +1,42 @@
+.register-user-page {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #f4f4f4;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.register-user-page h1 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.register-user-page form {
+  display: flex;
+  flex-direction: column;
+}
+
+.register-user-page label {
+  margin-bottom: 0.5rem;
+}
+
+.register-user-page input {
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  margin-bottom: 1rem;
+}
+
+.register-user-page button[type="submit"] {
+  padding: 0.5rem 1rem;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.register-user-page button[type="submit"]:hover {
+  background-color: #45a049;
+}
