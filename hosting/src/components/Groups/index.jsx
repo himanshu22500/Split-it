@@ -1,23 +1,11 @@
-import Navbar from "../Navbar";
 import GroupList from "../GroupList";
 import { Container } from "react-bootstrap";
 import { v4 as uuidv4 } from "uuid";
-import { db } from "../../firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { firebaseApp } from "../../firebase";
-import DynamicForm from "../DynamicForm";
-import {
-  collection,
-  getDocs,
-  CollectionReference,
-  onSnapshot,
-  addDoc,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
+import { getUserData, setUserData } from "../db";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { GROUP_COLLECTION_PATH } from "../db";
 
 const Groups = () => {
   const [groupList, setGroupList] = useState([]);
@@ -31,37 +19,31 @@ const Groups = () => {
       }
     });
   };
+
   monitorAuthState();
 
   useEffect(() => {
     getGroupsList();
   }, []);
 
-  const groupsCollectionRef = collection(db, GROUP_COLLECTION_PATH);
-
   const getGroupsList = async () => {
-    try {
-      const data = await getDocs(groupsCollectionRef);
-      const filteredData = data.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-
-      setGroupList(filteredData);
-    } catch (err) {
-      console.error(err);
-    }
+    const userData = await getUserData();
+    console.log(userData);
+    const { groups } = userData;
+    console.log(groups);
+    setGroupList(groups);
   };
 
   const deleteGroup = async (id) => {
-    const groupsDoc = doc(db, GROUP_COLLECTION_PATH, id);
-
-    try {
-      await deleteDoc(groupsDoc);
-      getGroupsList();
-    } catch (err) {
-      console.log(err);
-    }
+    const userData = await getUserData();
+    const { groups } = userData;
+    const updatedGroups = groups.filter((group) => group.groupId !== id);
+    const updatedUserData = {
+      ...userData,
+      groups: updatedGroups,
+    };
+    await setUserData(updatedUserData, userData.id);
+    getGroupsList();
   };
 
   return (

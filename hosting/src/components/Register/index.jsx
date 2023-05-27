@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Form, Button, Card, Alert, Container } from "react-bootstrap";
-import { firebaseApp } from "../../firebase";
+import { firebaseApp, db } from "../../firebase";
 import { AuthErrorCodes } from "firebase/auth";
+import { USER_COLLECTION_PATH } from "../db";
+import { addDoc, collection } from "firebase/firestore";
 import {
   getAuth,
   onAuthStateChanged,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
 import "./index.css";
+let userDocRef = null;
 
 const auth = getAuth(firebaseApp);
 
 const RegisterUserPage = () => {
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confPassword, setconfPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    monitorAuthState();
-  }, []);
 
   const monitorAuthState = async () => {
     onAuthStateChanged(auth, (user) => {
@@ -31,9 +31,28 @@ const RegisterUserPage = () => {
       }
     });
   };
+  monitorAuthState();
+
+  const addUser = async () => {
+    const userCollectionRef = collection(db, USER_COLLECTION_PATH);
+    try {
+      userDocRef = await addDoc(userCollectionRef, {
+        email: email,
+        name: name,
+        groups: [],
+        firends: [],
+      });
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
+  };
+
+  const handleNameChange = (e) => {
+    setName(e.target.value);
   };
 
   const handlePasswordChange = (e) => {
@@ -60,7 +79,9 @@ const RegisterUserPage = () => {
         throw new Error("Password Do not match");
       }
       await createUserWithEmailAndPassword(auth, email, password);
+      addUser();
       setLoading(true);
+
       navigate("/home/");
     } catch (error) {
       console.log(error);
@@ -81,6 +102,10 @@ const RegisterUserPage = () => {
             <h2 className="text-center mb-4">Sign Up</h2>
             {error && <Alert variant="danger">{error}</Alert>}
             <Form onSubmit={handleSubmit}>
+              <Form.Group id="name">
+                <Form.Label>Name</Form.Label>
+                <Form.Control onChange={handleNameChange} required />
+              </Form.Group>
               <Form.Group id="email">
                 <Form.Label>Email</Form.Label>
                 <Form.Control

@@ -7,7 +7,6 @@ import NotFoundPage from "./components/NotFound";
 import Groups from "./components/Groups";
 import DynamicForm from "./components/DynamicForm";
 import Layout from "./components/Layout";
-import AuthRequired from "./components/ProtectedRoute";
 
 const App = () => {
   return (

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Form, Button, Card, Alert, Container } from "react-bootstrap";
-import { firebaseApp } from "../../firebase";
+import { db, firebaseApp } from "../../firebase";
 import { AuthErrorCodes } from "firebase/auth";
 import {
   getAuth,

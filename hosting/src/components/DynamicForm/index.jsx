@@ -1,29 +1,13 @@
 import React, { useState } from "react";
 import { Form, Button, Card, Alert, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { db } from "../../firebase";
-import { GROUP_COLLECTION_PATH } from "../db";
-import { collection, addDoc } from "firebase/firestore";
+import { addGroup } from "../db";
 
 const DynamicForm = (props) => {
   const [inputs, setInputs] = useState([""]); // State to store the input values
   const [groupName, setGroupName] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  const groupsCollectionRef = collection(db, GROUP_COLLECTION_PATH);
-
-  const addGroup = async (groupName, inputs) => {
-    try {
-      await addDoc(groupsCollectionRef, {
-        name: groupName,
-        members: inputs,
-      });
-      navigate("/groups");
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   // Function to handle adding more input fields
   const addInput = () => {
@@ -38,9 +22,10 @@ const DynamicForm = (props) => {
   };
 
   // Function to handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    addGroup(groupName, inputs);
+    await addGroup(groupName, inputs);
+    navigate("/groups");
     setInputs([""]);
     setGroupName("");
   };
@@ -54,7 +39,6 @@ const DynamicForm = (props) => {
         <Card>
           <Card.Body>
             <h2 className="text-center mb-4">Add Group</h2>
-            {/* {loginError && <Alert variant="danger">{loginError}</Alert>} */}
             <Form onSubmit={handleSubmit}>
               <Form.Group id="groupName">
                 <Form.Label>Group Name</Form.Label>
@@ -77,11 +61,7 @@ const DynamicForm = (props) => {
                   />
                 </Form.Group>
               ))}
-              <Button
-                disabled={loading}
-                onClick={addInput}
-                className="w-100 mt-2"
-              >
+              <Button onClick={addInput} className="w-100 mt-2">
                 More Members
               </Button>
               <Button disabled={loading} className="w-100 mt-3" type="submit">
