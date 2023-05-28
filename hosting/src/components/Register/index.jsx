@@ -5,13 +5,13 @@ import { firebaseApp, db } from "../../firebase";
 import { AuthErrorCodes } from "firebase/auth";
 import { USER_COLLECTION_PATH } from "../db";
 import { addDoc, collection } from "firebase/firestore";
+import { updateDbFetchData } from "../db";
 import {
   getAuth,
   onAuthStateChanged,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
 import "./index.css";
-let userDocRef = null;
 
 const auth = getAuth(firebaseApp);
 
@@ -36,12 +36,13 @@ const RegisterUserPage = () => {
   const addUser = async () => {
     const userCollectionRef = collection(db, USER_COLLECTION_PATH);
     try {
-      userDocRef = await addDoc(userCollectionRef, {
+      const userDocRef = await addDoc(userCollectionRef, {
         email: email,
         name: name,
         groups: [],
-        firends: [],
+        friends: [],
       });
+      updateDbFetchData(email);
     } catch (e) {
       console.log(e.message);
     }

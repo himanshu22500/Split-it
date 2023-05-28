@@ -8,9 +8,10 @@ import { useNavigate } from "react-router-dom";
 
 const actions = [
   { action: "Share Link", path: "/share" },
-  { action: "Switch Group", path: "/fs" },
+  { action: "Add Friends", path: "/friends/new" },
   { action: "Add Group", path: "/groups/new" },
 ];
+
 const expense = [
   { action: "Even Distribution", path: "distro" },
   { action: "Uneven Distribution", path: "distro" },

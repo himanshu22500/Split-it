@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { firebaseApp } from "../../firebase";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth, signOut } from "firebase/auth";
 import "./index.css";
 
 const auth = getAuth(firebaseApp);
@@ -24,7 +24,7 @@ const Navbar = () => {
           <Link to="/groups">Groups</Link>
         </li>
         <li>
-          <Link to="/expense">Expenses</Link>
+          <Link to="/friends">Friends</Link>
         </li>
       </ul>
       <ul>

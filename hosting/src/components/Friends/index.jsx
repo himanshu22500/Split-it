@@ -1,13 +1,15 @@
-import { Container, Table, Button } from "react-bootstrap";
+import Table from "react-bootstrap/Table";
+import { Container, Button } from "react-bootstrap";
 import { v4 as uuidv4 } from "uuid";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { firebaseApp } from "../../firebase";
-import { getUserData, setUserData } from "../db";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { deleteFriend, getUserData } from "../db";
+import FriendList from "../FriendList";
 
-const Groups = () => {
-  const [groupList, setGroupList] = useState([]);
+const Friends = () => {
+  const [friendList, setFriendList] = useState([]);
 
   const navigate = useNavigate();
   const auth = getAuth(firebaseApp);
@@ -18,17 +20,27 @@ const Groups = () => {
       }
     });
   };
-
   monitorAuthState();
 
   useEffect(() => {
-    getGroupsList();
+    getFriendsList();
   }, []);
 
-  const getGroupsList = async () => {
-    const userData = await getUserData();
-    const { groups } = userData;
-    setGroupList(groups);
+  const getFriendsList = async () => {
+    try {
+      const userData = await getUserData();
+      const { friends } = userData;
+      console.log(userData);
+      console.log(friends);
+      setFriendList(friends);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const deleteFriendAndUpdate = async (id) => {
+    await deleteFriend(id);
+    getFriendsList();
   };
 
   return (
@@ -38,32 +50,30 @@ const Groups = () => {
         style={{ minHeight: "100vh" }}
       >
         <div className="w-100" style={{ maxWidth: "400px" }}>
-          <h1 className="text-center">Groups </h1>
           <Table striped bordered hover>
             <thead>
               <tr>
                 <th>#</th>
                 <th>Name</th>
+                <th>Money</th>
+                <th>Settle</th>
+                <th>Delete</th>
               </tr>
             </thead>
             <tbody>
-              {groupList.map((each, index) => {
-                return (
-                  <tr key={uuidv4()}>
-                    <td>{index + 1}</td>
-                    <td>
-                      <Link to={`/groups/${each.groupId}/`}>
-                        {each.groupName}
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })}
+              {friendList.map((friend, index) => (
+                <FriendList
+                  key={uuidv4()}
+                  friend={friend}
+                  index={index}
+                  deleteFriend={deleteFriendAndUpdate}
+                />
+              ))}
             </tbody>
           </Table>
           <div className="d-flex justify-content-center">
-            <Link to="/groups/new">
-              <Button className="w-100 mt-2">+</Button>
+            <Link to="/friends/new">
+              <Button>+</Button>
             </Link>
           </div>
         </div>
@@ -72,4 +82,4 @@ const Groups = () => {
   );
 };
 
-export default Groups;
+export default Friends;

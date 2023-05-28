@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Form, Button, Card, Alert, Container } from "react-bootstrap";
 import { db, firebaseApp } from "../../firebase";
 import { AuthErrorCodes } from "firebase/auth";
+import { updateDbFetchData } from "../db";
 import {
   getAuth,
   onAuthStateChanged,
@@ -52,6 +53,7 @@ const Login = () => {
     try {
       setLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
+      updateDbFetchData(email);
       navigate("/home");
     } catch (error) {
       setCustomLoginError(error);

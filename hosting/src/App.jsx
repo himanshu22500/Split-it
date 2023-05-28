@@ -7,6 +7,9 @@ import NotFoundPage from "./components/NotFound";
 import Groups from "./components/Groups";
 import DynamicForm from "./components/DynamicForm";
 import Layout from "./components/Layout";
+import GroupDetails from "./components/GroupDetails";
+import Friends from "./components/Friends";
+import AddFriend from "./components/AddFriend";
 
 const App = () => {
   return (
@@ -17,7 +20,10 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route element={<Layout />}>
           <Route path="/groups" element={<Groups />} />
+          <Route path="/groups/:id" element={<GroupDetails />} />
           <Route path="/groups/new" element={<DynamicForm />} />
+          <Route path="/friends" element={<Friends />} />
+          <Route path="/friends/new" element={<AddFriend />} />
           <Route path="/home" element={<Home />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
