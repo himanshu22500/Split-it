@@ -1,10 +1,10 @@
 import { Container, Table, Button } from "react-bootstrap";
-import { v4 as uuidv4 } from "uuid";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { firebaseApp } from "../../firebase";
-import { getUserData, setUserData } from "../db";
+import { deleteGroup, getUserData, setUserData } from "../db";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Group from "../Group";
 
 const Groups = () => {
   const [groupList, setGroupList] = useState([]);
@@ -44,21 +44,14 @@ const Groups = () => {
               <tr>
                 <th>#</th>
                 <th>Name</th>
+                <th>Delete</th>
               </tr>
             </thead>
             <tbody>
-              {groupList.map((each, index) => {
-                return (
-                  <tr key={uuidv4()}>
-                    <td>{index + 1}</td>
-                    <td>
-                      <Link to={`/groups/${each.groupId}/`}>
-                        {each.groupName}
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })}
+              {console.log(groupList)}
+              {groupList.map((groupDetails, index) => (
+                <Group groupDetails={groupDetails} index={index} key={index} />
+              ))}
             </tbody>
           </Table>
           <div className="d-flex justify-content-center">

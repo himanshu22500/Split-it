@@ -2,8 +2,10 @@ import ListGroup from "react-bootstrap/ListGroup";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { v4 as uuidv4 } from "uuid";
-import { getGroupData, getUserData, deleteGroup } from "../db";
+import { getGroupData, deleteGroup } from "../db";
 import { useEffect, useState } from "react";
+import PeopleList from "../PeopleList";
+import ExpenseList from "../ExpenseList";
 
 const GroupDetails = () => {
   const { id } = useParams();
@@ -11,6 +13,7 @@ const GroupDetails = () => {
     groupName: "",
     groupMembers: [],
     groupId: "",
+    groupExpense: [],
   });
   const navigate = useNavigate();
 
@@ -23,7 +26,8 @@ const GroupDetails = () => {
     setGroupData(data);
   };
 
-  const { groupName, groupMembers, groupId } = groupData;
+  const { groupName, groupMembers, groupId, totalMoneySpent, groupExpense } =
+    groupData;
 
   const handleDeleteClick = async () => {
     await deleteGroup(groupId);
@@ -31,24 +35,24 @@ const GroupDetails = () => {
   };
 
   return (
-    <ListGroup className="mt-4">
-      <ListGroup.Item>
+    <div className="text-center">
+      <div>
         <h1>{groupName}</h1>
-      </ListGroup.Item>
-      {groupMembers.map((member) => (
-        <ListGroup.Item key={uuidv4()} variant="primary">
-          {member}
-        </ListGroup.Item>
-      ))}
-
-      <Button
-        className="w-100 mt-3"
-        variant="danger"
-        onClick={handleDeleteClick}
-      >
-        Delete Group
-      </Button>
-    </ListGroup>
+        <h2>Total Money Spent : {totalMoneySpent}</h2>
+      </div>
+      <div className="d-flex justify-content-between">
+        <div class="flex-grow-1"></div>
+        <div className="w-100" style={{ maxWidth: "400px" }}>
+          <h2>People</h2>
+          <PeopleList groupMembers={groupMembers} />
+        </div>
+        <div className="w-100" style={{ maxWidth: "400px" }}>
+          <h2>Expenses</h2>
+          <ExpenseList groupExpense={groupExpense} urlId={id} />
+        </div>
+        <div class="flex-grow-1"></div>
+      </div>
+    </div>
   );
 };
 

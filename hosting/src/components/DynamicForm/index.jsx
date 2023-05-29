@@ -24,7 +24,8 @@ const DynamicForm = (props) => {
   // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await addGroup(groupName, inputs);
+    const members = inputs.map((input) => ({ name: input, money: 0 }));
+    await addGroup(groupName, members);
     navigate("/groups");
     setInputs([""]);
     setGroupName("");

@@ -10,6 +10,7 @@ import Layout from "./components/Layout";
 import GroupDetails from "./components/GroupDetails";
 import Friends from "./components/Friends";
 import AddFriend from "./components/AddFriend";
+import AddExpense from "./components/AddExpense";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
         <Route element={<Layout />}>
           <Route path="/groups" element={<Groups />} />
           <Route path="/groups/:id" element={<GroupDetails />} />
+          <Route path="groups/:id/expense" element={<AddExpense />} />
           <Route path="/groups/new" element={<DynamicForm />} />
           <Route path="/friends" element={<Friends />} />
           <Route path="/friends/new" element={<AddFriend />} />

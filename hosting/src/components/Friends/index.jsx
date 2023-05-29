@@ -6,7 +6,7 @@ import { firebaseApp } from "../../firebase";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { deleteFriend, getUserData } from "../db";
-import FriendList from "../FriendList";
+import Friend from "../Friend";
 
 const Friends = () => {
   const [friendList, setFriendList] = useState([]);
@@ -62,7 +62,7 @@ const Friends = () => {
             </thead>
             <tbody>
               {friendList.map((friend, index) => (
-                <FriendList
+                <Friend
                   key={uuidv4()}
                   friend={friend}
                   index={index}

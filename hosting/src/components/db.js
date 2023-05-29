@@ -11,8 +11,8 @@ import { v4 as uuidv4 } from "uuid";
 import { db } from "../firebase";
 
 export const USER_COLLECTION_PATH = "/user";
-export let userEmail;
-export let docId;
+export let userEmail = "test@gmail.com";
+export let docId = "hkcqOXOw4ZaF41KeszMp";
 export const updateDbFetchData = (eml) => {
   userEmail = eml;
   getUserData();
@@ -26,13 +26,11 @@ export const getUserData = async () => {
     ...doc.data(),
     id: doc.id,
   }));
-  console.log(userEmail);
   docId = userData[0].id;
-  console.log(docId);
   return userData[0];
 };
 
-export const setUserData = async (userData, id) => {
+export const setUserData = async (userData) => {
   try {
     const docRef = doc(db, `${USER_COLLECTION_PATH}/${docId}`);
     await updateDoc(docRef, {
@@ -57,7 +55,13 @@ export const deleteGroup = async (id) => {
 export const addGroup = async (groupName, inputs) => {
   const userData = await getUserData();
   const { groups } = userData;
-  groups.push({ groupName, groupMembers: inputs, groupId: uuidv4() });
+  groups.push({
+    groupName,
+    groupMembers: inputs,
+    groupId: uuidv4(),
+    groupExpense: [],
+    totalMoneySpent: 0,
+  });
   try {
     const docRef = doc(db, `${USER_COLLECTION_PATH}/${docId}`);
     await updateDoc(docRef, {
@@ -107,4 +111,53 @@ export const deleteFriend = async (id) => {
   };
 
   await setUserData(updatedUserData, docId);
+};
+
+export const addExpense = async (name, amount, paidBy, id) => {
+  let userData = await getUserData();
+  let { groups } = userData;
+  let groupToChange;
+  const restGroups = groups.filter((group) => {
+    if (group.groupId === id) {
+      groupToChange = group;
+    }
+    return group.groupId !== id;
+  });
+
+  console.log(groupToChange);
+  groupToChange.groupExpense.push({
+    name,
+    amount,
+    paidBy,
+    expenseId: uuidv4(),
+  });
+
+  groupToChange.totalMoneySpent += Number(amount);
+  const eachCost = Math.floor(
+    Number(amount) / groupToChange.groupMembers.length
+  );
+  console.log(eachCost);
+  const updatedMembers = groupToChange.groupMembers.map((member) => {
+    if (member.name === paidBy) {
+      return {
+        name: member.name,
+        money: member.money + eachCost,
+      };
+    }
+
+    return {
+      name: member.name,
+      money: member.money - eachCost,
+    };
+  });
+
+  groupToChange.groupMembers = updatedMembers;
+
+  restGroups.push(groupToChange);
+  userData = {
+    ...userData,
+    groups: restGroups,
+  };
+
+  setUserData(userData);
 };
